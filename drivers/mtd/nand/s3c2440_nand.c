@@ -15,13 +15,13 @@
 #define S3C2440_NFCONF_512BYTE     (1<<14)
 #define S3C2440_NFCONF_4STEP       (1<<13)
 #define S3C2440_NFCONF_INITECC     (1<<12)
-#define S3C2440_NFCONF_nFCE        (1<<11)
+#define S3C2440_NFCONT_nFCE        (1<< 1)
 #define S3C2440_NFCONF_TACLS(x)    ((x)<<8)
 #define S3C2440_NFCONF_TWRPH0(x)   ((x)<<4)
 #define S3C2440_NFCONF_TWRPH1(x)   ((x)<<0)
 
-#define S3C2440_ADDR_NALE 4
-#define S3C2440_ADDR_NCLE 8
+#define S3C2440_ADDR_NALE 8
+#define S3C2440_ADDR_NCLE 12
 
 #ifdef CONFIG_NAND_SPL
 
@@ -56,11 +56,11 @@ static void s3c24x0_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
 		chip->IO_ADDR_W = (void *)IO_ADDR_W;
 
 		if (ctrl & NAND_NCE)
-			writel(readl(&nand->nfconf) & ~S3C2440_NFCONF_nFCE,
-			       &nand->nfconf);
+			writel(readl(&nand->nfcont) & ~S3C2440_NFCONT_nFCE,
+			       &nand->nfcont);
 		else
-			writel(readl(&nand->nfconf) | S3C2440_NFCONF_nFCE,
-			       &nand->nfconf);
+			writel(readl(&nand->nfcont) | S3C2440_NFCONT_nFCE,
+			       &nand->nfcont);
 	}
 
 	if (cmd != NAND_CMD_NONE)
@@ -72,6 +72,17 @@ static int s3c24x0_dev_ready(struct mtd_info *mtd)
 	struct s3c24x0_nand *nand = s3c24x0_get_base_nand();
 	debug("dev_ready\n");
 	return readl(&nand->nfstat) & 0x01;
+}
+
+static void s3c24x0_nand_select_chip(struct mtd_info *mtd, int chip)
+{
+    struct s3c24x0_nand *nand = s3c24x0_get_base_nand();
+
+    if (chip == -1) {
+        nand->nfconf |= S3C2440_NFCONT_nFCE;
+    } else {
+        nand->nfconf &= ~S3C2440_NFCONT_nFCE;
+    }
 }
 
 #ifdef CONFIG_S3C2440_NAND_HWECC
@@ -110,7 +121,11 @@ static int s3c24x0_nand_correct_data(struct mtd_info *mtd, u_char *dat,
 
 int board_nand_init(struct nand_chip *nand)
 {
-	u_int32_t cfg;
+#if 0
+    u_int32_t cfg;
+#else
+	u_int32_t nfconf, nfcont;
+#endif
 	u_int8_t tacls, twrph0, twrph1;
 	struct s3c24x0_clock_power *clk_power = s3c24x0_get_base_clock_power();
 	struct s3c24x0_nand *nand_reg = s3c24x0_get_base_nand();
@@ -125,22 +140,32 @@ int board_nand_init(struct nand_chip *nand)
 	twrph0 = CONFIG_S3C24XX_TWRPH0;
 	twrph1 =  CONFIG_S3C24XX_TWRPH1;
 #else
-	tacls = 4;
-	twrph0 = 8;
-	twrph1 = 8;
+	tacls = 0;
+	twrph0 = 4;
+	twrph1 = 2;
 #endif
 
+#if 0
 	cfg = S3C2440_NFCONF_EN;
 	cfg |= S3C2440_NFCONF_TACLS(tacls - 1);
 	cfg |= S3C2440_NFCONF_TWRPH0(twrph0 - 1);
 	cfg |= S3C2440_NFCONF_TWRPH1(twrph1 - 1);
+	
 	writel(cfg, &nand_reg->nfconf);
+#else
+    /* Set flash memory timing */
+    nfconf = (tacls<<12)|(twrph0<<8)|(twrph1<<4);
+    /* Initialize ECC, enable chip select, NAND flash controller enable */
+    nfcont = (1<<4)|(0<<1)|(1<<0);
+#endif	
+	writel(nfconf, &nand_reg->nfconf);
+	writel(nfcont, &nand_reg->nfcont);
 
 	/* initialize nand_chip data structure */
 	nand->IO_ADDR_R = (void *)&nand_reg->nfdata;
 	nand->IO_ADDR_W = (void *)&nand_reg->nfdata;
 
-	nand->select_chip = NULL;
+	nand->select_chip = s3c24x0_nand_select_chip;
 
 	/* read_buf and write_buf are default */
 	/* read_byte and write_byte are default */
