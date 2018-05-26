@@ -35,10 +35,10 @@
 /*
  * Hardware drivers
  */
-#define CONFIG_CS8900		/* we have a CS8900 on-board */
-#define CONFIG_CS8900_BASE	0x19000300
-#define CONFIG_CS8900_BUS16	/* the Linux driver does accesses as shorts */
-
+#define CONFIG_DRIVER_DM9000		
+#define CONFIG_DM9000_BASE			0x20000000
+#define DM9000_IO					0x20000000  
+#define DM9000_DATA					0x20000004
 /*
  * select serial console configuration
  */
@@ -80,11 +80,20 @@
 /* autoboot */
 #define CONFIG_BOOT_RETRY_TIME	-1
 #define CONFIG_RESET_TO_RETRY
-
 #define CONFIG_NETMASK		255.255.255.0
+#define CONFIG_ETHADDR	    08:00:3e:26:0a:5b
 #define CONFIG_IPADDR		192.168.1.10
 #define CONFIG_SERVERIP		192.168.1.167
+#define CONFIG_BOOTARGS    	"noinitrd root=/dev/mtdblock3 init=/linuxrc console=ttySAC0 rootfstype=jffs2"
+#define CONFIG_BOOTCOMMAND	"nand read 0x30007FC0 0x60000 0x200000; bootm 0x30007FC0"
 
+#define CONFIG_EXTRA_ENV_SETTINGS               \
+     "mtddevnum=0\0"                            \
+	 "mtddevname=bootloader\0"                  \
+	 "partition=nand0,0\0"                      \
+	 "mtdids=nand0=nandflash0\0"                \
+	 "mtdparts=mtdparts=nandflash0:256k@0(bootloader),128k(params),2m(kernel),-(root)\0"  \
+     ""
 #if defined(CONFIG_CMD_KGDB)
 #define CONFIG_KGDB_BAUDRATE	115200	/* speed to run kgdb serial port */
 #endif
@@ -170,6 +179,7 @@
 #define CONFIG_MTD_PARTITIONS
 #define CONFIG_YAFFS2
 #define CONFIG_RBTREE
+#define CONFIG_JFFS2_NAND
 
 /* additions for new relocation code, must be added to all boards */
 #define CONFIG_SYS_SDRAM_BASE	PHYS_SDRAM_1

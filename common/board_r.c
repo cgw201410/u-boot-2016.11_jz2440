@@ -128,7 +128,7 @@ static int initr_reloc(void)
 static int initr_caches(void)
 {
 	/* Enable caches */
-	enable_caches();
+	/*enable_caches();*/
 	return 0;
 }
 #endif
