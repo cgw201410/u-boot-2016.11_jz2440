@@ -78,12 +78,20 @@ copyex:
 	ldr	r1, =0x3ff
 	ldr	r0, =INTSUBMSK
 	str	r1, [r0]
+# elif defined(CONFIG_S3C2440)
+	ldr	r1, =0x7ff
+	ldr	r0, =INTSUBMSK
+	str	r1, [r0]
 # endif
 
 	/* FCLK:HCLK:PCLK = 1:2:4 */
 	/* default FCLK is 120 MHz ! */
 	ldr	r0, =CLKDIVN
+# if defined(CONFIG_S3C2410)
 	mov	r1, #3
+# elif defined(CONFIG_S3C2440)
+    mov r1, #5
+#endif
 	str	r1, [r0]
 #endif	/* CONFIG_S3C24X0 */
 

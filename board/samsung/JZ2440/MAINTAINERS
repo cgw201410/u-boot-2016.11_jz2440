@@ -1,0 +1,6 @@
+JZ2440 BOARD
+M:	chenguanwei <707650970@qq.com>
+S:	Maintained
+F:	board/samsung/JZ2440/
+F:	include/configs/JZ2440.h
+F:	configs/JZ2440_defconfig
