@@ -144,36 +144,6 @@
 
 #define CONFIG_SYS_FLASH_BASE	PHYS_FLASH_1
 
-/*-----------------------------------------------------------------------
- * FLASH and environment organization
- */
-
-#define CONFIG_SYS_FLASH_CFI
-#define CONFIG_FLASH_CFI_DRIVER
-/*#define CONFIG_FLASH_CFI_LEGACY*/
-/*#define CONFIG_SYS_FLASH_LEGACY_512Kx16*/
-#define CFG_FLASH_CFI_WIDTH  FLASH_CFI_16BIT  /* FLASH_CFI_16BIT */
-#define CONFIG_FLASH_SHOW_PROGRESS	45
-
-#define CONFIG_SYS_MAX_FLASH_BANKS	1
-#define CONFIG_SYS_FLASH_BANKS_LIST     { CONFIG_SYS_FLASH_BASE }
-#define CONFIG_SYS_MAX_FLASH_SECT	(35)
-
-#define CONFIG_ENV_ADDR			(CONFIG_SYS_FLASH_BASE + 0x0A0000)
-#define CONFIG_ENV_IS_IN_FLASH
-#define CONFIG_ENV_SIZE			0x10000
-/* allow to overwrite serial and ethaddr */
-#define CONFIG_ENV_OVERWRITE
-
-/*
- * Size of malloc() pool
- * BZIP2 / LZO / LZMA need a lot of RAM
- */
-#define CONFIG_SYS_MALLOC_LEN	(4 * 1024 * 1024)
-
-#define CONFIG_SYS_MONITOR_LEN	(640 * 1024)
-#define CONFIG_SYS_MONITOR_BASE	CONFIG_SYS_FLASH_BASE
-
 /* SPL */
 #if defined(CONFIG_SPL_BUILD)
 #define CONFIG_SPL_FRAMEWORK
@@ -193,6 +163,43 @@
 #define CONFIG_SPL_NAND_DRIVERS
 #define CONFIG_SPL_NAND_TINY
 #endif
+
+/*-----------------------------------------------------------------------
+ * FLASH and environment organization
+ */
+
+#define CONFIG_SYS_FLASH_CFI
+#define CONFIG_FLASH_CFI_DRIVER
+/*#define CONFIG_FLASH_CFI_LEGACY*/
+/*#define CONFIG_SYS_FLASH_LEGACY_512Kx16*/
+#define CFG_FLASH_CFI_WIDTH  FLASH_CFI_16BIT  /* FLASH_CFI_16BIT */
+#define CONFIG_FLASH_SHOW_PROGRESS	45
+
+#define CONFIG_SYS_MAX_FLASH_BANKS	1
+#define CONFIG_SYS_FLASH_BANKS_LIST     { CONFIG_SYS_FLASH_BASE }
+#define CONFIG_SYS_MAX_FLASH_SECT	(35)
+
+/*#define CONFIG_ENV_IS_IN_FLASH*/
+#define CONFIG_ENV_IS_IN_NAND
+
+#ifdef CONFIG_ENV_IS_IN_FLASH
+#define CONFIG_ENV_ADDR			(CONFIG_SYS_FLASH_BASE + 0x0A0000)
+#define CONFIG_ENV_SIZE			0x10000
+#elif defined(CONFIG_ENV_IS_IN_NAND)
+#define CONFIG_ENV_OFFSET       (0x20000 + 0xA0000)  /*CONFIG_SYS_NAND_U_BOOT_OFFS + CONFIG_SYS_NAND_U_BOOT_SIZE*/
+#define CONFIG_ENV_SIZE			0x10000
+#endif
+/* allow to overwrite serial and ethaddr */
+#define CONFIG_ENV_OVERWRITE
+
+/*
+ * Size of malloc() pool
+ * BZIP2 / LZO / LZMA need a lot of RAM
+ */
+#define CONFIG_SYS_MALLOC_LEN	(4 * 1024 * 1024)
+
+#define CONFIG_SYS_MONITOR_LEN	(640 * 1024)
+#define CONFIG_SYS_MONITOR_BASE	CONFIG_SYS_FLASH_BASE
 
 /*
  * NAND configuration
