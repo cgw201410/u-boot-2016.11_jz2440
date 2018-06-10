@@ -9,7 +9,15 @@ ifdef CONFIG_DM_SERIAL
 obj-y += serial-uclass.o
 obj-$(CONFIG_PL01X_SERIAL) += serial_pl01x.o
 else
+ifdef CONFIG_SPL_BUILD
+ifdef CONFIG_SPL_SERIAL_TINY_SUPPORT
+obj-y += serial_tiny.o
+else
 obj-y += serial.o
+endif
+else
+obj-y += serial.o
+endif
 obj-$(CONFIG_PL010_SERIAL) += serial_pl01x.o
 obj-$(CONFIG_PL011_SERIAL) += serial_pl01x.o
 obj-$(CONFIG_SYS_NS16550_SERIAL) += serial_ns16550.o
@@ -30,8 +38,10 @@ obj-$(CONFIG_PXA_SERIAL) += serial_pxa.o
 obj-$(CONFIG_MESON_SERIAL) += serial_meson.o
 ifdef CONFIG_SPL_BUILD
 obj-$(CONFIG_ROCKCHIP_SERIAL) += serial_rockchip.o
-endif
+obj-$(CONFIG_S3C24X0_SERIAL) += serial0_s3c24x0.o
+else
 obj-$(CONFIG_S3C24X0_SERIAL) += serial_s3c24x0.o
+endif
 obj-$(CONFIG_XILINX_UARTLITE) += serial_xuartlite.o
 obj-$(CONFIG_SANDBOX_SERIAL) += sandbox.o
 obj-$(CONFIG_SCIF_CONSOLE) += serial_sh.o

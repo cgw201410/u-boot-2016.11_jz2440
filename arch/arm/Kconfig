@@ -148,6 +148,7 @@ config TARGET_SMDK2410
 config TARGET_JZ2440
 	bool "Support JZ2440"
 	select CPU_ARM920T
+	select SUPPORT_SPL
 
 config TARGET_ASPENITE
 	bool "Support aspenite"

@@ -9,7 +9,11 @@
 #
 
 ifdef CONFIG_SPL_BUILD
+ifdef CONFIG_USE_ONLY_PRINTF
+obj-$(CONFIG_SPL_FRAMEWORK) += spl_simple.o
+else
 obj-$(CONFIG_SPL_FRAMEWORK) += spl.o
+endif
 obj-$(CONFIG_SPL_LOAD_FIT) += spl_fit.o
 obj-$(CONFIG_SPL_NOR_SUPPORT) += spl_nor.o
 obj-$(CONFIG_SPL_YMODEM_SUPPORT) += spl_ymodem.o

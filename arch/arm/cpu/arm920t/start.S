@@ -25,6 +25,48 @@
  *************************************************************************
  */
 
+#if 1
+#define GPFCON	0x56000050
+#define GPFDAT	0x56000054
+#define GPFUP	0x56000058
+
+	.globl dbg_led_on
+	.globl dbg_led_off
+
+dbg_led_init:
+	ldr r0,=GPFCON
+	ldr r1,=0xDDFF
+	str r1,[r0]
+	
+	ldr r0,=GPFDAT
+	ldr r1,=0xFFFF
+	str r1,[r0]	
+	
+	mov pc,lr
+
+dbg_led_on:
+	ldr r0,=GPFDAT
+	ldr r1,[r0]
+#if !defined(CONFIG_SPL_BUILD)
+	bic r1,r1,#0x0010
+#else
+        bic r1,r1,#0x0040
+#endif
+	str r1,[r0]
+	mov pc,lr
+dbg_led_off:
+	ldr r0,=GPFDAT
+	ldr r1,[r0]
+#if !defined(CONFIG_SPL_BUILD)
+	orr r1,r1,#0x0010
+#else
+        orr r1,r1,#0x0040
+#endif
+	str r1,[r0]
+	mov pc,lr
+#endif
+
+
 	.globl	reset
 
 reset:
@@ -93,6 +135,9 @@ copyex:
     mov r1, #5
 #endif
 	str	r1, [r0]
+
+
+
 #endif	/* CONFIG_S3C24X0 */
 
 	/*
@@ -102,7 +147,11 @@ copyex:
 #ifndef CONFIG_SKIP_LOWLEVEL_INIT
 	bl	cpu_init_crit
 #endif
-
+#if 1
+    bl dbg_led_init
+    bl dbg_led_off
+	bl dbg_led_on
+#endif
 	bl	_main
 
 /*------------------------------------------------------------------------------*/

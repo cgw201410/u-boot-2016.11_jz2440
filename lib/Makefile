@@ -85,12 +85,17 @@ ifdef CONFIG_TPL_BUILD
 SERIAL_SUPPORT := $(CONFIG_TPL_SERIAL_SUPPORT)
 else
 SERIAL_SUPPORT := $(CONFIG_SPL_SERIAL_SUPPORT)
+SERIAL_SUPPORT := $(CONFIG_SPL_SERIAL_TINY_SUPPORT)
 endif
 # SPL U-Boot may use full-printf, tiny-printf or none at all
 ifdef CONFIG_USE_TINY_PRINTF
 obj-$(SERIAL_SUPPORT) += tiny-printf.o panic.o strto.o
 else
+ifdef CONFIG_USE_ONLY_PRINTF
+obj-$(SERIAL_SUPPORT) += only-printf.o 
+else
 obj-$(SERIAL_SUPPORT) += vsprintf.o panic.o strto.o strmhz.o
+endif
 endif
 else
 # Main U-Boot always uses the full printf support

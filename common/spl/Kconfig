@@ -443,6 +443,16 @@ config SPL_SERIAL_SUPPORT
 	  unless there are space reasons not to. Even then, consider
 	  enabling USE_TINY_PRINTF which is a small printf() version.
 
+config SPL_SERIAL_TINY_SUPPORT
+	bool "Support serial"
+	depends on SPL
+	help
+	  Enable support for serial in SPL. This allows use of a serial UART
+	  for displaying messages while SPL is running. It also brings in
+	  printf() and panic() functions. This should normally be enabled
+	  unless there are space reasons not to. Even then, consider
+	  enabling USE_TINY_PRINTF which is a small printf() version.
+
 config SPL_SPI_FLASH_SUPPORT
 	bool "Support SPI flash drivers"
 	depends on SPL

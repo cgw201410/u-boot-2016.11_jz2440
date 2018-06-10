@@ -19,6 +19,7 @@ obj-$(CONFIG_ARMADA_38X) += ddr/marvell/a38x/
 obj-$(CONFIG_ARMADA_XP) += ddr/marvell/axp/
 obj-$(CONFIG_ALTERA_SDRAM) += ddr/altera/
 obj-$(CONFIG_SPL_SERIAL_SUPPORT) += serial/
+obj-$(CONFIG_SPL_SERIAL_TINY_SUPPORT) += serial/
 obj-$(CONFIG_SPL_SPI_SUPPORT) += spi/
 obj-$(CONFIG_SPL_POWER_SUPPORT) += power/ power/pmic/
 obj-$(CONFIG_SPL_POWER_SUPPORT) += power/regulator/

@@ -84,8 +84,8 @@ int board_early_init_f(void)
 	writel(0x0000FFFF, &gpio->gpdup);
 	writel(0xAAAAAAAA, &gpio->gpecon);
 	writel(0x0000FFFF, &gpio->gpeup);
-	writel(0x000055AA, &gpio->gpfcon);
-	writel(0x000000FF, &gpio->gpfup);
+	//writel(0x000055AA, &gpio->gpfcon);
+	//writel(0x000000FF, &gpio->gpfup);
 	writel(0xFF95FFBA, &gpio->gpgcon);
 	writel(0x0000FFFF, &gpio->gpgup);
 	writel(0x002AFAAA, &gpio->gphcon);
@@ -93,6 +93,7 @@ int board_early_init_f(void)
 
 	return 0;
 }
+
 
 int board_init(void)
 {

@@ -21,7 +21,21 @@
 #define CONFIG_S3C2440		/* specifically a SAMSUNG S3C2410 SoC */
 /*#define CONFIG_JZ2440*/ 		/* on a SAMSUNG SMDK2410 Board */
 
-#define CONFIG_SYS_TEXT_BASE	0x0
+#if defined(CONFIG_SPL_BUILD)
+#define CONFIG_SYS_TEXT_BASE	    0
+#else
+
+/*#define CONFIG_BOOT_FROM_NOR_FLASH*/
+
+#if defined(CONFIG_BOOT_FROM_NOR_FLASH)
+#define CONFIG_SYS_TEXT_BASE	    0
+#else
+#define CONFIG_SYS_TEXT_BASE	    0x33F28000
+#define CONFIG_SKIP_LOWLEVEL_INIT
+#endif
+#endif
+
+/*#define CONFIG_SKIP_LOWLEVEL_INIT_ONLY*/
 
 #define CONFIG_SYS_ARM_CACHE_WRITETHROUGH
 
@@ -159,6 +173,26 @@
 
 #define CONFIG_SYS_MONITOR_LEN	(640 * 1024)
 #define CONFIG_SYS_MONITOR_BASE	CONFIG_SYS_FLASH_BASE
+
+/* SPL */
+#if defined(CONFIG_SPL_BUILD)
+#define CONFIG_SPL_FRAMEWORK
+#define CONFIG_SPL_TEXT_BASE	          0
+#define CONFIG_SPL_MAX_SIZE		          0x1000
+#define CONFIG_SPL_STACK		          0x1000
+#define CONFIG_SPL_NAND_RAW_ONLY
+#define CONFIG_SPL_NAND_BOOT
+#define CONFIG_SYS_NAND_U_BOOT_OFFS       0x20000
+#define CONFIG_SYS_NAND_U_BOOT_DST        0x33F28000
+#define CONFIG_SYS_NAND_U_BOOT_SIZE       0xA0000    /*(640 * 1024)*/
+#define CONFIG_SYS_NAND_U_BOOT_START      0x33F28000
+#define CONFIG_SPL_LDSCRIPT               "arch/arm/cpu/u-boot-spl.lds"
+#define CONFIG_SPL_BOARD_INIT           
+#define CONFIG_USE_ONLY_PRINTF
+
+#define CONFIG_SPL_NAND_DRIVERS
+#define CONFIG_SPL_NAND_TINY
+#endif
 
 /*
  * NAND configuration

@@ -507,6 +507,11 @@ int board_postclk_init (void); /* after clocks/timebase, before env/serial */
 int board_early_init_r (void);
 void board_poweroff (void);
 
+int board_early_init_spl_f(void);
+void led1_on(void);
+void led2_on(void);
+void led3_on(void);
+
 #if defined(CONFIG_SYS_DRAM_TEST)
 int testdram(void);
 #endif /* CONFIG_SYS_DRAM_TEST */
@@ -876,10 +881,17 @@ int	printf(const char *fmt, ...)
 		__attribute__ ((format (__printf__, 1, 2)));
 int	vprintf(const char *fmt, va_list args);
 #else
+#if defined(CONFIG_SPL_SERIAL_TINY_SUPPORT)
+void	putc(const char c);
+void	puts(const char *s);
+int	printf(const char *fmt, ...)
+		__attribute__ ((format (__printf__, 1, 2)));
+#else
 #define	putc(...) do { } while (0)
 #define puts(...) do { } while (0)
 #define printf(...) do { } while (0)
 #define vprintf(...) do { } while (0)
+#endif
 #endif
 
 /* stderr */
