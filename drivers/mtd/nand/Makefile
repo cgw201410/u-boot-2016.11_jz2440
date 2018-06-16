@@ -67,6 +67,10 @@ ifndef CONFIG_SPL_BUILD
 obj-$(CONFIG_NAND_S3C2440) += s3c2440_nand.o
 endif
 
+ifdef CONFIG_SPL_NAND_SIMPLE
+obj-$(CONFIG_NAND_S3C2440) += s3c2440_nand.o
+endif
+
 obj-$(CONFIG_NAND_SPEAR) += spr_nand.o
 obj-$(CONFIG_TEGRA_NAND) += tegra_nand.o
 obj-$(CONFIG_NAND_OMAP_GPMC) += omap_gpmc.o

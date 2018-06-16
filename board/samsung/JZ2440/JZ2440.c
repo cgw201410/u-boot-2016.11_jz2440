@@ -130,6 +130,7 @@ int board_eth_init(bd_t *bis)
 }
 #endif
 
+#if defined(CONFIG_BOOT_FROM_NOR_FLASH)
 /*
  * Hardcoded flash setup:
  * Flash 0 is a non-CFI AMD AM29LV800BB flash.
@@ -141,3 +142,4 @@ ulong board_flash_get_legacy(ulong base, int banknum, flash_info_t *info)
 	info->interface = FLASH_CFI_X16;
 	return 1;
 }
+#endif

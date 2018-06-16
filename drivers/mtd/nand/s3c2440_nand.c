@@ -18,6 +18,8 @@
 #define S3C2440_NFCONF_TWRPH0(x)   ((x)<<8)
 #define S3C2440_NFCONF_TWRPH1(x)   ((x)<<4)
 
+#define S3C2440_NFCONT_MAINECCLOCK       (1<<5)
+
 #define S3C2440_ADDR_NALE 0x08
 #define S3C2440_ADDR_NCLE 0x0C
 
@@ -87,18 +89,29 @@ void s3c24x0_nand_enable_hwecc(struct mtd_info *mtd, int mode)
 {
 	struct s3c24x0_nand *nand = s3c24x0_get_base_nand();
 	debug("s3c24x0_nand_enable_hwecc(%p, %d)\n", mtd, mode);
-	writel(readl(&nand->nfcont) | S3C2440_NFCONT_INITECC, &nand->nfcont);
+	writel((readl(&nand->nfcont) | S3C2440_NFCONT_INITECC) & (~S3C2440_NFCONT_MAINECCLOCK), &nand->nfcont);
 }
 
 static int s3c24x0_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
 				      u_char *ecc_code)
 {
 	struct s3c24x0_nand *nand = s3c24x0_get_base_nand();
+#if 0
 	ecc_code[0] = readb(&nand->nfecc);
 	ecc_code[1] = readb(&nand->nfecc + 1);
 	ecc_code[2] = readb(&nand->nfecc + 2);
-	debug("s3c24x0_nand_calculate_hwecc(%p,): 0x%02x 0x%02x 0x%02x\n",
-	      mtd , ecc_code[0], ecc_code[1], ecc_code[2]);
+#else
+    unsigned int mecc0;
+
+	writel(readl(&nand->nfcont) | S3C2440_NFCONT_MAINECCLOCK, &nand->nfcont);
+	mecc0 = readl(&nand->nfmecc0);
+	ecc_code[0] = mecc0 & 0xff;
+	ecc_code[1] = (mecc0 >> 8) & 0xff;
+	ecc_code[2] = (mecc0 >>16) & 0xff;
+	ecc_code[3] = (mecc0 >>24) & 0xff;
+#endif
+	debug("s3c24x0_nand_calculate_hwecc(%p,): 0x%02x 0x%02x 0x%02x, 0x%02x\n",
+	      mtd , ecc_code[0], ecc_code[1], ecc_code[2], ecc_code[3]);
 
 	return 0;
 }
@@ -106,6 +119,7 @@ static int s3c24x0_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
 static int s3c24x0_nand_correct_data(struct mtd_info *mtd, u_char *dat,
 				     u_char *read_ecc, u_char *calc_ecc)
 {
+#if 0
 	if (read_ecc[0] == calc_ecc[0] &&
 	    read_ecc[1] == calc_ecc[1] &&
 	    read_ecc[2] == calc_ecc[2])
@@ -113,6 +127,46 @@ static int s3c24x0_nand_correct_data(struct mtd_info *mtd, u_char *dat,
 
 	printf("s3c24x0_nand_correct_data: not implemented\n");
 	return -EBADMSG;
+#else
+
+	struct s3c24x0_nand *nand = s3c24x0_get_base_nand();
+    u_int32_t meccdata0, meccdata1, estat0, err_byte_addr;
+	u_int8_t repaired;
+	int ret = -1;
+
+	meccdata0 = (read_ecc[1] << 16) | read_ecc[0];
+	meccdata1 = (read_ecc[3] << 16) | read_ecc[2];
+	writel(meccdata0, &nand->nfeccd0);
+	writel(meccdata1, &nand->nfeccd1);
+	/*read ecc status*/
+	estat0 = readl(&nand->nfstat0);
+	switch (estat0 & 0x3){
+	    case 0: /*no error*/
+		    ret = 0;
+			break;
+		case 1:
+		    /* 
+			 *1bit error(correctable)
+			 *(nfestat0 >>7) & 0x7ff    error byte number
+			 *(nfestat0 >>4) & 0x7      error bit number
+			 */
+			 err_byte_addr = (estat0 >> 7 ) & 0x7ff;
+			 repaired = dat[err_byte_addr] ^ (1 << ((estat0 >> 4) & 0x7));
+			 printf("S3C NAND: 1 bit error detected at byte%ld. "
+			        "Correcting from 0x%02x to0x%02x...OK\n",
+					(long int)err_byte_addr, dat[err_byte_addr], repaired);
+		     dat[err_byte_addr]= repaired;
+			 ret = 1;
+			 break;
+		case 2: /* Multiple error */
+		case 3: /* ECC area error */
+		    printf("S3C NAND: ECC uncorrectable errordetected. Not correctable.\n");
+			ret = -1;
+			break;
+	}
+
+	return ret;
+#endif
 }
 #endif
 
