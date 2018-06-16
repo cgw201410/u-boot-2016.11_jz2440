@@ -96,11 +96,6 @@ static int s3c24x0_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
 				      u_char *ecc_code)
 {
 	struct s3c24x0_nand *nand = s3c24x0_get_base_nand();
-#if 0
-	ecc_code[0] = readb(&nand->nfecc);
-	ecc_code[1] = readb(&nand->nfecc + 1);
-	ecc_code[2] = readb(&nand->nfecc + 2);
-#else
     unsigned int mecc0;
 
 	writel(readl(&nand->nfcont) | S3C2440_NFCONT_MAINECCLOCK, &nand->nfcont);
@@ -109,7 +104,7 @@ static int s3c24x0_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
 	ecc_code[1] = (mecc0 >> 8) & 0xff;
 	ecc_code[2] = (mecc0 >>16) & 0xff;
 	ecc_code[3] = (mecc0 >>24) & 0xff;
-#endif
+
 	debug("s3c24x0_nand_calculate_hwecc(%p,): 0x%02x 0x%02x 0x%02x, 0x%02x\n",
 	      mtd , ecc_code[0], ecc_code[1], ecc_code[2], ecc_code[3]);
 
@@ -119,15 +114,6 @@ static int s3c24x0_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
 static int s3c24x0_nand_correct_data(struct mtd_info *mtd, u_char *dat,
 				     u_char *read_ecc, u_char *calc_ecc)
 {
-#if 0
-	if (read_ecc[0] == calc_ecc[0] &&
-	    read_ecc[1] == calc_ecc[1] &&
-	    read_ecc[2] == calc_ecc[2])
-		return 0;
-
-	printf("s3c24x0_nand_correct_data: not implemented\n");
-	return -EBADMSG;
-#else
 
 	struct s3c24x0_nand *nand = s3c24x0_get_base_nand();
     u_int32_t meccdata0, meccdata1, estat0, err_byte_addr;
@@ -152,7 +138,7 @@ static int s3c24x0_nand_correct_data(struct mtd_info *mtd, u_char *dat,
 			 */
 			 err_byte_addr = (estat0 >> 7 ) & 0x7ff;
 			 repaired = dat[err_byte_addr] ^ (1 << ((estat0 >> 4) & 0x7));
-			 printf("S3C NAND: 1 bit error detected at byte%ld. "
+			 printf("S3C2440 NAND: 1 bit error detected at byte%ld. "
 			        "Correcting from 0x%02x to0x%02x...OK\n",
 					(long int)err_byte_addr, dat[err_byte_addr], repaired);
 		     dat[err_byte_addr]= repaired;
@@ -160,13 +146,12 @@ static int s3c24x0_nand_correct_data(struct mtd_info *mtd, u_char *dat,
 			 break;
 		case 2: /* Multiple error */
 		case 3: /* ECC area error */
-		    printf("S3C NAND: ECC uncorrectable errordetected. Not correctable.\n");
+		    printf("S3C2440 NAND: ECC uncorrectable error detected. Not correctable.\n");
 			ret = -1;
 			break;
 	}
 
 	return ret;
-#endif
 }
 #endif
 
