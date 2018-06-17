@@ -84,7 +84,7 @@ static int s3c24x0_dev_ready(struct mtd_info *mtd)
 	return readl(&nand->nfstat) & 0x01;
 }
 
-#ifdef CONFIG_S3C2440_NAND_HWECC
+#ifdef CONFIG_SYS_S3C2440_NAND_HWECC
 void s3c24x0_nand_enable_hwecc(struct mtd_info *mtd, int mode)
 {
 	struct s3c24x0_nand *nand = s3c24x0_get_base_nand();
@@ -203,7 +203,7 @@ int board_nand_init(struct nand_chip *nand)
 
 	nand->dev_ready = s3c24x0_dev_ready;
 
-#ifdef CONFIG_S3C2440_NAND_HWECC
+#ifdef CONFIG_SYS_S3C2440_NAND_HWECC
 	nand->ecc.hwctl = s3c24x0_nand_enable_hwecc;
 	nand->ecc.calculate = s3c24x0_nand_calculate_ecc;
 	nand->ecc.correct = s3c24x0_nand_correct_data;
