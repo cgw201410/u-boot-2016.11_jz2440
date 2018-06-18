@@ -100,7 +100,7 @@
 #define CONFIG_IPADDR		192.168.1.10
 #define CONFIG_SERVERIP		192.168.1.167
 #define CONFIG_BOOTARGS    	"noinitrd root=/dev/mtdblock3 init=/linuxrc console=ttySAC0 rootfstype=jffs2"
-#define CONFIG_BOOTCOMMAND	"nand read 0x307FFFC0 0xE0000 0x200000; bootm 0x307FFFC0"
+#define CONFIG_BOOTCOMMAND	"nand read 0x307FFFC0 0xE0000 0x500000; bootm 0x307FFFC0"
 
 #define CONFIG_EXTRA_ENV_SETTINGS               \
      "mtddevnum=0\0"                            \
