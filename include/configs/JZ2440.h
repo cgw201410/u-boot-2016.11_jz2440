@@ -99,8 +99,8 @@
 #define CONFIG_ETHADDR	    08:00:3e:26:0a:5b
 #define CONFIG_IPADDR		192.168.1.10
 #define CONFIG_SERVERIP		192.168.1.167
-#define CONFIG_BOOTARGS    	"noinitrd root=/dev/mtdblock3 init=/linuxrc console=ttySAC0 rootfstype=jffs2"
-#define CONFIG_BOOTCOMMAND	"nand read 0x307FFFC0 0xE0000 0x500000; bootm 0x307FFFC0"
+#define CONFIG_BOOTARGS    	"noinitrd root=/dev/mtdblock3 init=/linuxrc console=ttySAC0,115200n8 rootfstype=jffs2"
+#define CONFIG_BOOTCOMMAND	"nand read 0x30007FC0 0xE0000 0x500000; bootm 0x30007FC0"
 
 #define CONFIG_EXTRA_ENV_SETTINGS               \
      "mtddevnum=0\0"                            \
@@ -127,7 +127,7 @@
 #define CONFIG_SYS_MEMTEST_START	0x30000000	/* memtest works on */
 #define CONFIG_SYS_MEMTEST_END		0x33F00000	/* 63 MB in DRAM */
 
-#define CONFIG_SYS_LOAD_ADDR		0x30800000
+#define CONFIG_SYS_LOAD_ADDR		0x30008000//0x30800000
 
 /* support additional compression methods */
 #define CONFIG_BZIP2
