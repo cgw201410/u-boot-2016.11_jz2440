@@ -25,7 +25,7 @@
 #define CONFIG_SYS_TEXT_BASE	    0
 #else
 
-/*#define CONFIG_SYS_BOOT_FROM_NOR_FLASH*/
+#define CONFIG_SYS_BOOT_FROM_NOR_FLASH
 
 #if defined(CONFIG_SYS_BOOT_FROM_NOR_FLASH)
 #define CONFIG_SYS_TEXT_BASE	    0
@@ -107,7 +107,7 @@
 	 "mtddevname=bootloader\0"                  \
 	 "partition=nand0,0\0"                      \
 	 "mtdids=nand0=nandflash0\0"                \
-	 "mtdparts=mtdparts=nandflash0:128k@0(spl),640k(bootloader),128k(params),2m(kernel),-(root)\0"  \
+	 "mtdparts=mtdparts=nandflash0:128k@0(spl),640k(bootloader),128k(params),5m(kernel),-(root)\0"  \
      ""
 #if defined(CONFIG_CMD_KGDB)
 #define CONFIG_KGDB_BAUDRATE	115200	/* speed to run kgdb serial port */
