@@ -99,13 +99,13 @@
 #define CONFIG_ETHADDR	    08:00:3e:26:0a:5b
 #define CONFIG_IPADDR		192.168.1.10
 #define CONFIG_SERVERIP		192.168.1.167
-#define CONFIG_BOOTARGS    	"noinitrd root=/dev/mtdblock3 init=/linuxrc console=ttySAC0,115200n8 rootfstype=jffs2"
+#define CONFIG_BOOTARGS    	"noinitrd root=/dev/mtdblock4 rw init=/linuxrc console=ttySAC0,115200n8 rootfstype=jffs2"
 #define CONFIG_BOOTCOMMAND	"nand read 0x30007FC0 0xE0000 0x500000; bootm 0x30007FC0"
 
 #define CONFIG_EXTRA_ENV_SETTINGS               \
-     "mtddevnum=0\0"                            \
-	 "mtddevname=bootloader\0"                  \
-	 "partition=nand0,0\0"                      \
+     "mtddevnum=4\0"                            \
+	 "mtddevname=root\0"                  \
+	 "partition=nand0,4\0"                      \
 	 "mtdids=nand0=nandflash0\0"                \
 	 "mtdparts=mtdparts=nandflash0:128k@0(spl),640k(bootloader),128k(params),5m(kernel),-(root)\0"  \
      ""
@@ -214,7 +214,7 @@
  */
 #ifdef CONFIG_CMD_NAND
 #define CONFIG_NAND_S3C2440
-#define CONFIG_SYS_S3C2440_NAND_HWECC
+/*#define CONFIG_SYS_S3C2440_NAND_HWECC*/
 #define CONFIG_SYS_NAND_ECCSIZE     2048
 #define CONFIG_SYS_NAND_ECCBYTES    4
 #define CONFIG_SYS_MAX_NAND_DEVICE	1
@@ -234,7 +234,11 @@
 #define CONFIG_MTD_PARTITIONS
 #define CONFIG_YAFFS2
 #define CONFIG_RBTREE
+#define CONFIG_CMD_JFFS2
 #define CONFIG_JFFS2_NAND
+#define CONFIG_JFFS2_DEV            "nand0"
+#define CONFIG_JFFS2_PART_OFFSET    0x5E0000
+#define CONFIG_JFFS2_PART_SIZE      (((256 * 1024) - (5 * 1024) - 128 - 640 - 128) * 1024)
 
 /* additions for new relocation code, must be added to all boards */
 #define CONFIG_SYS_SDRAM_BASE	PHYS_SDRAM_1
