@@ -139,7 +139,7 @@ static int s3c24x0_nand_correct_data(struct mtd_info *mtd, u_char *dat,
 			 err_byte_addr = (estat0 >> 7 ) & 0x7ff;
 			 repaired = dat[err_byte_addr] ^ (1 << ((estat0 >> 4) & 0x7));
 			 printf("S3C2440 NAND: 1 bit error detected at byte%ld. "
-			        "Correcting from 0x%02x to0x%02x...OK\n",
+			        "Correcting from 0x%02x to 0x%02x...OK\n",
 					(long int)err_byte_addr, dat[err_byte_addr], repaired);
 		     dat[err_byte_addr]= repaired;
 			 ret = 1;
