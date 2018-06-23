@@ -57,7 +57,7 @@ __weak void __noreturn jump_to_image_no_args(struct spl_image_info *spl_image)
 
 	puts("image entry point: ");
 	if (spl_image->entry_point == CONFIG_SYS_NAND_U_BOOT_START) {
-        puts("0x33F28000\n");	
+        puts("0x30800000\n");	
 		puts("          \n");
 		putc('\n');
 	}
