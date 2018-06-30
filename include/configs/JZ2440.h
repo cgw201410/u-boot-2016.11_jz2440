@@ -100,14 +100,15 @@
 #define CONFIG_IPADDR		192.168.1.10
 #define CONFIG_SERVERIP		192.168.1.167
 #define CONFIG_BOOTARGS    	"noinitrd root=/dev/mtdblock4 rw init=/linuxrc console=ttySAC0,115200n8 rootfstype=jffs2"
-#define CONFIG_BOOTCOMMAND	"nand read 0x30007FC0 0xE0000 0x500000; bootm 0x30007FC0"
+#define CONFIG_BOOTCOMMAND	"nand read 0x30007FC0 kernel; bootm 0x30007FC0"
+
+#define MTDIDS_DEFAULT      "nand0=NAND"
+#define MTDPARTS_DEFAULT    "mtdparts=NAND:128k@0(spl),640k(bootloader),128k(params),5m(kernel),-(root)"
 
 #define CONFIG_EXTRA_ENV_SETTINGS               \
      "mtddevnum=4\0"                            \
-	 "mtddevname=root\0"                  \
+	 "mtddevname=root\0"                        \
 	 "partition=nand0,4\0"                      \
-	 "mtdids=nand0=nandflash0\0"                \
-	 "mtdparts=mtdparts=nandflash0:128k@0(spl),640k(bootloader),128k(params),5m(kernel),-(root)\0"  \
      ""
 #if defined(CONFIG_CMD_KGDB)
 #define CONFIG_KGDB_BAUDRATE	115200	/* speed to run kgdb serial port */
