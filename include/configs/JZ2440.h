@@ -99,16 +99,20 @@
 #define CONFIG_ETHADDR	    08:00:3e:26:0a:5b
 #define CONFIG_IPADDR		192.168.1.10
 #define CONFIG_SERVERIP		192.168.1.167
-#define CONFIG_BOOTARGS    	"noinitrd root=/dev/mtdblock4 rw init=/linuxrc console=ttySAC0,115200n8 rootfstype=jffs2"
-#define CONFIG_BOOTCOMMAND	"nand read 0x30007FC0 kernel; bootm 0x30007FC0"
+/*
+ * move bootargs to dts
+ */
+/*#define CONFIG_BOOTARGS     "noinitrd root=/dev/mtdblock5 rw init=/linuxrc console=ttySAC0,115200n8 loglevel=7 earlyprintk rootfstype=jffs2"*/
+
+#define CONFIG_BOOTCOMMAND	"nand read 0x30007FC0 kernel; nand read 0x31000000 dtb; bootm 0x30007FC0 - 0x31000000"
 
 #define MTDIDS_DEFAULT      "nand0=NAND"
-#define MTDPARTS_DEFAULT    "mtdparts=NAND:128k@0(spl),640k(bootloader),128k(params),5m(kernel),-(root)"
+#define MTDPARTS_DEFAULT    "mtdparts=NAND:128k@0(spl),640k(bootloader),128k(params),128k(dtb),5m(kernel),-(rootfs)"
 
-#define CONFIG_EXTRA_ENV_SETTINGS               \
-     "mtddevnum=4\0"                            \
-	 "mtddevname=root\0"                        \
-	 "partition=nand0,4\0"                      \
+#define CONFIG_EXTRA_ENV_SETTINGS           \
+     "mtddevnum=5\0"                        \
+	 "mtddevname=rootfs\0"                  \
+	 "partition=nand0,5\0"                  \
      ""
 #if defined(CONFIG_CMD_KGDB)
 #define CONFIG_KGDB_BAUDRATE	115200	/* speed to run kgdb serial port */
