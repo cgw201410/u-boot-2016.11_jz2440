@@ -106,8 +106,8 @@
 
 #define CONFIG_BOOTCOMMAND	"nand read 0x30007FC0 kernel; nand read 0x31000000 dtb; bootm 0x30007FC0 - 0x31000000"
 
-#define MTDIDS_DEFAULT      "nand0=NAND"
-#define MTDPARTS_DEFAULT    "mtdparts=NAND:128k@0(spl),640k(bootloader),128k(params),128k(dtb),5m(kernel),-(rootfs)"
+#define MTDIDS_DEFAULT      "nand0=jz2440-nand0"
+#define MTDPARTS_DEFAULT    "mtdparts=jz2440-nand0:128k@0(spl),640k(bootloader),128k(params),128k(dtb),5m(kernel),-(rootfs)"
 
 #define CONFIG_EXTRA_ENV_SETTINGS           \
      "mtddevnum=5\0"                        \
